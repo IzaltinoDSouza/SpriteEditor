@@ -69,12 +69,39 @@ SpriteDoc sprite_doc_create_from_sprite(char * name,char * author,const Sprite *
 
 SpriteDoc sprite_doc_load(const char * filename)
 {
-    //TODO : it need to be implemented
+    SpriteDoc doc;
+    //TODO: check if filename is NULL
+    doc.name = malloc(strlen(filename));
+    strcpy(doc.name,filename);
+    
+    //TODO: get author
+    doc.author = NULL;
+        
+    doc.version   = SPRITE_DOC_01_VERSION;
+    doc.auto_save = 0;
+    doc.modified  = 0;
+    
+    //TODO check load fail
+    doc.sprite = sprite_load((char*)filename);
+    
+    return doc;
 }
 
 void sprite_doc_save(const SpriteDoc * doc)
 {
-    //TODO : it need to be implemented
+    static const char sprite_extension[] = ".sprite\0";
+    const size_t doc_name_size = strlen(doc->name);
+    
+    //TODO : check allocation fail 
+    char * filename = malloc(doc_name_size + 8);    
+    
+    //copy
+    strcpy(filename,doc->name);
+    strcpy(filename + doc_name_size,sprite_extension);
+    
+    //TODO check save fail
+    sprite_save(filename,&doc->sprite);
+    free(filename);
 }
 
 void sprite_doc_clearup(SpriteDoc * doc)
