@@ -79,6 +79,24 @@ void on_keypressed(SpriteEditor * editor,uint16_t scancode)
     {
         editor->cursor.selected = (editor->cursor.selected == 1) ? 0 : 1;
     }
+
+    if(editor->edit_mode == 1 && editor->cursor.x == -1)
+        editor->cursor.x = 0;
+    
+    if(editor->edit_mode == 1 && editor->cursor.y == -1)
+        editor->cursor.y = 0;
+    
+    if(editor->edit_mode == 1)
+    {
+        const size_t sprite_x_max = (editor->sprite.width  / editor->sprite.pixelsize) - 1;
+        const size_t sprite_y_max = (editor->sprite.height / editor->sprite.pixelsize) - 1;
+        
+        if(editor->cursor.x == -1) editor->cursor.x = 0;
+        if(editor->cursor.y == -1) editor->cursor.y = 0;
+        
+        if(editor->cursor.x > sprite_x_max) editor->cursor.x = sprite_x_max;
+        if(editor->cursor.y > sprite_y_max) editor->cursor.y = sprite_y_max;
+    }
 }
 
 SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t pixelsize)
