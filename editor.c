@@ -29,21 +29,56 @@ void fill_rectangle(size_t x,size_t y,size_t width,size_t height,uint32_t pixel)
         }
     }
 }
-
+void drawcursor(SpriteEditor * editor,uint8_t color)
+{
+    fill_rectangle(editor->cursor.x * editor->sprite.pixelsize,
+                   editor->cursor.y * editor->sprite.pixelsize,
+                   editor->sprite.pixelsize-1,
+                   editor->sprite.pixelsize-1,
+                   (color == 1) ? ATSIN_RGB(255,255,255) :
+                                  ATSIN_RGB(0,0,0));
+}
 void on_keypressed(SpriteEditor * editor,uint16_t scancode)
 {
-	if(scancode == SDL_SCANCODE_R)
-	{
-		sprite_editor_render_sprite(editor,0,0);
-	}
-	else if(scancode == SDL_SCANCODE_D)
-	{
-		sprite_editor_draw_sprite(editor,0,0);
-	}	
-	else
-	{		
-		printf("%d\n",scancode);
-	}
+    if(scancode == SDL_SCANCODE_R)
+    {
+        sprite_editor_render_sprite(editor,0,0);
+    }
+    else if(scancode == SDL_SCANCODE_D)
+    {
+        sprite_editor_draw_sprite(editor,0,0);
+    }else if(scancode == SDL_SCANCODE_E)
+    {
+        editor->edit_mode = (editor->edit_mode == 1) ? 0 : 1;
+    }
+    /*else
+    {
+        printf("%d\n",scancode);
+    }*/
+
+    if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_LEFT)
+    {
+        editor->cursor.x -= 1;
+    }
+    else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_RIGHT)
+    {
+        editor->cursor.x += 1;
+    }
+    else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_UP)
+    {
+        editor->cursor.y -= 1;
+    }
+    else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_DOWN)
+    {
+        editor->cursor.y += 1;
+    }
+    else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_I)
+    {
+        editor->cursor.color = (editor->cursor.color == 0) ? 1 : 0;
+    }else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_SPACE)
+    {
+        editor->cursor.selected = (editor->cursor.selected == 1) ? 0 : 1;
+    }
 }
 
 SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t pixelsize)
@@ -56,6 +91,12 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
     editor->sprite.height    = height;
     editor->sprite.pixelsize = pixelsize;
     editor->sprite.pixels    = malloc(width*height);
+
+    editor->cursor.x         = 0;
+    editor->cursor.y         = 0;
+    editor->cursor.selected  = 0;
+    editor->cursor.color     = 1;
+    editor->edit_mode        = 0;
     
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0)
     {
@@ -171,6 +212,20 @@ void sprite_editor_event_loop(SpriteEditor * editor)
                 break;
             }
         }
+
+        if(editor->edit_mode)
+        {
+            sprite_editor_draw_sprite(editor,0,0);
+            if(editor->cursor.selected)
+            {
+                sprite_editor_edit_sprite(editor,
+                                          editor->cursor.x,editor->cursor.y,
+                                          editor->cursor.color);
+                editor->cursor.selected = 0;
+            }
+            drawcursor(editor,editor->cursor.color);
+        }
+
         SDL_UpdateWindowSurface(g_sdl_window);
     }
 }

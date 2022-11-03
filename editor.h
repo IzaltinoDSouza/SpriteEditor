@@ -2,6 +2,7 @@
 
 #include "sprite.h"
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -12,7 +13,11 @@ typedef struct
     {
         size_t   x;
         size_t   y;
+        uint8_t  color;
+        uint8_t  selected;
     }cursor;
+
+    bool edit_mode;    
 }SpriteEditor;
 
 SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t pixelsize);
