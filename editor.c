@@ -32,8 +32,18 @@ void fill_rectangle(size_t x,size_t y,size_t width,size_t height,uint32_t pixel)
 
 void on_keypressed(SpriteEditor * editor,uint16_t scancode)
 {
-	printf("%d\n",scancode);
-	
+	if(scancode == SDL_SCANCODE_R)
+	{
+		sprite_editor_render_sprite(editor,0,0);
+	}
+	else if(scancode == SDL_SCANCODE_D)
+	{
+		sprite_editor_draw_sprite(editor,0,0);
+	}	
+	else
+	{		
+		printf("%d\n",scancode);
+	}
 }
 
 SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t pixelsize)
