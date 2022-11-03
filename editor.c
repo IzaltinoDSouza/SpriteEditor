@@ -50,6 +50,9 @@ void on_keypressed(SpriteEditor * editor,uint16_t scancode)
     }else if(scancode == SDL_SCANCODE_E)
     {
         editor->edit_mode = (editor->edit_mode == 1) ? 0 : 1;
+    }else if(scancode == SDL_SCANCODE_S)
+    {
+       sprite_doc_save(&editor->doc);
     }
     /*else
     {
@@ -239,8 +242,13 @@ void sprite_editor_event_loop(SpriteEditor * editor)
                 editor->cursor.selected = 0;
             }
             drawcursor(editor,editor->cursor.color);
+            editor->doc.modified = 1;
         }
-
+		if(editor->doc.auto_save && editor->doc.modified)
+		{
+			sprite_doc_save(&editor->doc);
+			editor->doc.modified = 0;
+		}
         SDL_UpdateWindowSurface(g_sdl_window);
     }
 }
