@@ -30,6 +30,12 @@ void fill_rectangle(size_t x,size_t y,size_t width,size_t height,uint32_t pixel)
     }
 }
 
+void on_keypressed(SpriteEditor * editor,uint16_t scancode)
+{
+	printf("%d\n",scancode);
+	
+}
+
 SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t pixelsize)
 {
     SpriteEditor * editor = malloc(sizeof(SpriteEditor));
@@ -150,9 +156,8 @@ void sprite_editor_event_loop(SpriteEditor * editor)
                 case SDL_QUIT:
                     is_running = false;
                 break;
-                case SDL_KEYUP:
                 case SDL_KEYDOWN:
-                   //g_sdl_event.key.keysym.scancode
+                   on_keypressed(editor,g_sdl_event.key.keysym.scancode);
                 break;
             }
         }
