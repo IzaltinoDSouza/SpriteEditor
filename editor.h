@@ -7,6 +7,12 @@ typedef struct
 {
     char * title;
     Sprite sprite;
+    
+    struct Cursor
+    {
+        size_t   x;
+        size_t   y;
+    }cursor;
 }SpriteEditor;
 
 SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t pixelsize);
