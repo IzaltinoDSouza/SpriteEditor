@@ -11,3 +11,4 @@ typedef struct
 }Sprite;
 
 Sprite sprite_load(char * filename);
+void   sprite_save(char * filename,const Sprite * sprite);
