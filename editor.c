@@ -138,40 +138,6 @@ void sprite_editor_draw_sprite(SpriteEditor * editor,size_t x,size_t y)
         }
     }
 }
-void sprite_editor_keyup_event(SpriteEditor * editor,
-                               void (*callback)(uint16_t scancode))
-{
-    editor->events.kb_event.keyup_callback = callback;
-}
-void sprite_editor_keydown_event(SpriteEditor * editor,
-                                 void (*callback)(uint16_t scancode))
-{
-    editor->events.kb_event.keydown_callback = callback;
-}
-void sprite_editor_mouse_move_event(SpriteEditor * editor,
-                                    void (*callback)(int x,int y,
-                                                     int relative_x,int relative_y,
-                                                     uint32_t state))
-{
-    editor->events.mouse_event.move_callback = callback;
-}
-                                           
-void sprite_editor_mouse_button_event(SpriteEditor * editor,
-                                      void (*callback)(int x,int y,
-                                                       uint8_t button,
-                                                       uint8_t state,
-                                                       uint8_t clicks))
-{
-    editor->events.mouse_event.button_callback = callback;
-}
-                                           
-void sprite_editor_mouse_wheel_event(SpriteEditor * editor,
-                                     void (*callback)(int x,int y,
-                                                      float precise_x,float precise_y,
-                                                      uint32_t direction))
-{
-    editor->events.mouse_event.wheel_callback = callback;
-}
 void sprite_editor_event_loop(SpriteEditor * editor)
 {
     bool is_running = 1;
@@ -185,16 +151,9 @@ void sprite_editor_event_loop(SpriteEditor * editor)
                     is_running = false;
                 break;
                 case SDL_KEYUP:
-                    if(editor->events.kb_event.keyup_callback)
-                        editor->events.kb_event.keyup_callback(g_sdl_event.key.keysym.scancode);
-                break;
                 case SDL_KEYDOWN:
-                    if(editor->events.kb_event.keydown_callback)
-                        editor->events.kb_event.keydown_callback(g_sdl_event.key.keysym.scancode);
+                   //g_sdl_event.key.keysym.scancode
                 break;
-                /*
-                    TODO Mouse event
-                */
             }
         }
         SDL_UpdateWindowSurface(g_sdl_window);
