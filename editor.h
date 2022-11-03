@@ -1,13 +1,13 @@
 #pragma once
 
-#include "sprite.h"
+#include "sprite_doc.h"
 #include <stddef.h>
 #include <stdbool.h>
 
 typedef struct
 {
-    char * title;
-    Sprite sprite;
+    char *    title;
+    SpriteDoc doc;
     
     struct Cursor
     {
