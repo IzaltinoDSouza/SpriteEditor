@@ -9,6 +9,20 @@ typedef struct
     char *    title;
     SpriteDoc doc;
     
+    struct Window
+    {
+    	size_t width;
+    	size_t height; 
+    }window;
+    
+    struct SpriteDocWindow
+    {
+    	size_t x;
+    	size_t y;
+    	size_t width;
+    	size_t height;
+    }sprite_doc_window;
+    
     struct Cursor
     {
         size_t   x;

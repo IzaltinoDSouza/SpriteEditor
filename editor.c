@@ -91,14 +91,14 @@ void on_keypressed(SpriteEditor * editor,uint16_t scancode)
     
     if(editor->edit_mode == 1)
     {
-        const size_t sprite_x_max = (editor->doc.sprite.width  / editor->doc.sprite.pixelsize) - 1;
-        const size_t sprite_y_max = (editor->doc.sprite.height / editor->doc.sprite.pixelsize) - 1;
+        const size_t x_max = (editor->sprite_doc_window.width  / editor->doc.sprite.pixelsize) - 1;
+        const size_t y_max = (editor->sprite_doc_window.height / editor->doc.sprite.pixelsize) - 1;
         
         if(editor->cursor.x == -1) editor->cursor.x = 0;
         if(editor->cursor.y == -1) editor->cursor.y = 0;
         
-        if(editor->cursor.x > sprite_x_max) editor->cursor.x = sprite_x_max;
-        if(editor->cursor.y > sprite_y_max) editor->cursor.y = sprite_y_max;
+        if(editor->cursor.x > x_max) editor->cursor.x = x_max;
+        if(editor->cursor.y > y_max) editor->cursor.y = y_max;
     }
 }
 
@@ -107,8 +107,16 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
     SpriteEditor * editor = malloc(sizeof(SpriteEditor));
     editor->title = malloc(sizeof(char) * strlen(title));
     strcpy(editor->title,title);
-    
-    editor->doc = sprite_doc_create("untitled","unknown",width,height,pixelsize);
+
+    editor->window.width = width;
+    editor->window.width = height;
+
+    editor->sprite_doc_window.x      = 0;
+    editor->sprite_doc_window.y      = 0;
+    editor->sprite_doc_window.width  = width;
+    editor->sprite_doc_window.height = height-100;
+
+    editor->doc = sprite_doc_create("untitled","unknown",width,height-100,pixelsize);
 
     editor->cursor.x         = 0;
     editor->cursor.y         = 0;
@@ -159,9 +167,11 @@ void sprite_editor_load_sprite(SpriteEditor * editor,const Sprite * sprite)
 }
 void sprite_editor_render_sprite(SpriteEditor * editor,size_t x,size_t y)
 {
-    fill_rectangle(0,0,editor->doc.sprite.width,
-                       editor->doc.sprite.height,
-                       ATSIN_RGB(0,0,0));
+    fill_rectangle(editor->sprite_doc_window.x,
+                   editor->sprite_doc_window.y,
+                   editor->sprite_doc_window.width,
+                   editor->sprite_doc_window.height,
+                   ATSIN_RGB(0,0,0));
     
     for(size_t posy = 0;posy < editor->doc.sprite.height;++posy)
     {
@@ -171,7 +181,8 @@ void sprite_editor_render_sprite(SpriteEditor * editor,size_t x,size_t y)
             
             uint32_t color = editor->doc.sprite.pixels[offset] == 1 ? ATSIN_RGB(255,255,255) :
                                                                       ATSIN_RGB(0,0,0);
-            drawpixel(x+posx,y+posy,color);
+            drawpixel(editor->sprite_doc_window.x+x+posx,
+                      editor->sprite_doc_window.y+y+posy,color);
         }
     }
 }
@@ -182,9 +193,11 @@ void sprite_editor_edit_sprite(SpriteEditor * editor,size_t x,size_t y,uint8_t c
 }
 void sprite_editor_draw_sprite(SpriteEditor * editor,size_t x,size_t y)
 {
-    fill_rectangle(0,0,editor->doc.sprite.width,
-                       editor->doc.sprite.height,
-                       ATSIN_RGB(0,0,0));
+    fill_rectangle(editor->sprite_doc_window.x,
+                   editor->sprite_doc_window.y,
+                   editor->sprite_doc_window.width,
+                   editor->sprite_doc_window.height,
+                   ATSIN_RGB(0,0,0));
 
     for(size_t posy = 0;posy < editor->doc.sprite.height/editor->doc.sprite.pixelsize;++posy)
     {
@@ -194,8 +207,8 @@ void sprite_editor_draw_sprite(SpriteEditor * editor,size_t x,size_t y)
             
             if(editor->doc.sprite.pixels[offset] == 1)
             {
-                fill_rectangle(x+posx*editor->doc.sprite.pixelsize,
-                               y+posy*editor->doc.sprite.pixelsize,
+                fill_rectangle(editor->sprite_doc_window.x+x+posx*editor->doc.sprite.pixelsize,
+                               editor->sprite_doc_window.y+y+posy*editor->doc.sprite.pixelsize,
                                editor->doc.sprite.pixelsize-1,
                                editor->doc.sprite.pixelsize-1,
                                ATSIN_RGB(255,255,255));
@@ -203,8 +216,8 @@ void sprite_editor_draw_sprite(SpriteEditor * editor,size_t x,size_t y)
             else
             {
             
-                fill_rectangle(x+posx*editor->doc.sprite.pixelsize,
-                               y+posy*editor->doc.sprite.pixelsize,
+                fill_rectangle(editor->sprite_doc_window.x+x+posx*editor->doc.sprite.pixelsize,
+                               editor->sprite_doc_window.y+y+posy*editor->doc.sprite.pixelsize,
                                editor->doc.sprite.pixelsize-1,
                                editor->doc.sprite.pixelsize-1,
                                ATSIN_RGB(0,0,0));
