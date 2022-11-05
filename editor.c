@@ -159,9 +159,13 @@ void sprite_editor_load_sprite_from_disk(SpriteEditor * editor,const char * file
     if(editor->doc.sprite.pixels) free(editor->doc.sprite.pixels);
 
     editor->doc = sprite_doc_load(filename);
+
+    //TODO : check if sprite width and height is less than sprite_doc_window width and height
 }
 void sprite_editor_load_sprite(SpriteEditor * editor,const SpriteDoc * doc)
 {
+    //TODO : check if sprite width and height is less than sprite_doc_window width and height
+
     if(editor->doc.name)          free(editor->doc.name);
     if(editor->doc.author)        free(editor->doc.author); 
     if(editor->doc.sprite.pixels) free(editor->doc.sprite.pixels);
