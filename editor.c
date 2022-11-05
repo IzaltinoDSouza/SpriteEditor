@@ -132,7 +132,7 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
     editor->cursor.x         = 0;
     editor->cursor.y         = 0;
     editor->cursor.selected  = 0;
-    editor->cursor.color     = ATSIN_RGB(255,255,255);
+    editor->cursor.color     = 15;
     editor->edit_mode        = 0;
     
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0)
