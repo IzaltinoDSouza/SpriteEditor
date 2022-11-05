@@ -152,6 +152,14 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
     
     return editor;
 }
+void sprite_editor_load_sprite_from_disk(SpriteEditor * editor,const char * filename)
+{
+    if(editor->doc.name)          free(editor->doc.name);
+    if(editor->doc.author)        free(editor->doc.author); 
+    if(editor->doc.sprite.pixels) free(editor->doc.sprite.pixels);
+
+    editor->doc = sprite_doc_load(filename);
+}
 void sprite_editor_load_sprite(SpriteEditor * editor,const SpriteDoc * doc)
 {
     if(editor->doc.name)          free(editor->doc.name);
