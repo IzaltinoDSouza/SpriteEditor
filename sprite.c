@@ -36,12 +36,12 @@ Sprite atsin_sprite_load(char * filename)
             {
                 for(size_t x = 0;x < sprite.width;++x)
                 {
-                    char c;
-                    fscanf(fp,"%c",&c); 
-                    //printf("%c",c);
+                    uint8_t c;
+                    fscanf(fp,"%hhd,",&c); 
+                   // printf("%hhd ",c);
                                     
                     size_t offset = (x * sprite.width) + y;
-                    sprite.pixels[offset] = c - '0';
+                    sprite.pixels[offset] = c;
                 }
                 
                 //consome new line
@@ -78,7 +78,7 @@ void atsin_sprite_save(char * filename,const Sprite * sprite)
             for(size_t x = 0;x < sprite->width;++x)
             {
                 size_t offset = (x * sprite->width) + y;
-                fprintf(fp,"%c",sprite->pixels[offset] + '0');
+                fprintf(fp,"%03hhd,",sprite->pixels[offset]);
             }
             fprintf(fp,"\n");
         }
