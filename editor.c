@@ -152,18 +152,13 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
     
     return editor;
 }
-void sprite_editor_load_sprite(SpriteEditor * editor,const Sprite * sprite)
+void sprite_editor_load_sprite(SpriteEditor * editor,const SpriteDoc * doc)
 {
-    for(size_t posy = 0;posy < sprite->height;++posy)
-    {
-        for(size_t posx = 0;posx < sprite->width;++posx)
-        {            
-            size_t sprite_offset = (posx * sprite->width) + posy;
-            size_t editor_offset = (posx * editor->doc.sprite.width) + posy;
-            
-            editor->doc.sprite.pixels[editor_offset] = sprite->pixels[sprite_offset];
-        }
-    }
+    if(editor->doc.name)          free(editor->doc.name);
+    if(editor->doc.name)          free(editor->doc.author); 
+    if(editor->doc.sprite.pixels) free(editor->doc.sprite.pixels);
+
+    editor->doc = sprite_doc_create_from_sprite(doc->name,doc->author,&doc->sprite);
 }
 void sprite_editor_render_sprite(SpriteEditor * editor,size_t x,size_t y)
 {
@@ -199,12 +194,11 @@ void sprite_editor_draw_sprite(SpriteEditor * editor,size_t x,size_t y)
                    editor->sprite_doc_window.height,
                    ATSIN_RGB(0,0,0));
 
-    for(size_t posy = 0;posy < editor->doc.sprite.height/editor->doc.sprite.pixelsize;++posy)
+    for(size_t posy = 0;posy < editor->doc.sprite.height;++posy)
     {
-        for(size_t posx = 0;posx < editor->doc.sprite.width/editor->doc.sprite.pixelsize;++posx)
-        { 
+        for(size_t posx = 0;posx < editor->doc.sprite.width;++posx)
+        {
             size_t offset = (posx * editor->doc.sprite.width) + posy;
-            
             if(editor->doc.sprite.pixels[offset] == 1)
             {
                 fill_rectangle(editor->sprite_doc_window.x+x+posx*editor->doc.sprite.pixelsize,

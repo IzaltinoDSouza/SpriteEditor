@@ -38,7 +38,7 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
 
 void           sprite_editor_render_sprite(SpriteEditor * editor,size_t x,size_t y);
 
-void           sprite_editor_load_sprite(SpriteEditor * editor,const Sprite * sprite);
+void           sprite_editor_load_sprite(SpriteEditor * editor,const SpriteDoc * doc);
 
 void           sprite_editor_edit_sprite(SpriteEditor * editor,size_t x,size_t y,uint8_t color);
 
