@@ -275,7 +275,7 @@ void sprite_editor_event_loop(SpriteEditor * editor)
 
         if(editor->color_mode)
         {
-            uint32_t color = 0;
+            uint32_t color = 15;
             size_t offset = 0;
             for(size_t posy = 0;posy < editor->colors_window.height/16;++posy)
             {
