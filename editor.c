@@ -282,6 +282,8 @@ void sprite_editor_event_loop(SpriteEditor * editor)
             {
                 for(size_t posx = 0;posx < editor->colors_window.width/pixelsize;++posx)
                 {
+                    if(offset > COLORS_TABLE_SIZE) break;
+
                     if(editor->cursor.selected && editor->cursor.x == posx && editor->cursor.y == posy)
                        editor->cursor.color = offset;
 

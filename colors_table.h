@@ -1,6 +1,7 @@
 #pragma once
 
-static uint32_t colors_table[] = 
+#define COLORS_TABLE_SIZE 256
+static uint32_t colors_table[COLORS_TABLE_SIZE] =
 {
     ATSIN_RGB(0,0,0),
     ATSIN_RGB(128,0,0),
