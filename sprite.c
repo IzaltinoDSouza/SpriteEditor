@@ -56,6 +56,8 @@ Sprite atsin_sprite_load(char * filename)
         {
             //TODO error : {filename} is not a valid sprite
         }
+
+        fclose(fp);
     }else
     {
         //TODO : {filename} cannot be opened
@@ -82,6 +84,8 @@ void atsin_sprite_save(char * filename,const Sprite * sprite)
             }
             fprintf(fp,"\n");
         }
+
+        fclose(fp);
     }else
     {
         //TODO : {filename} cannot be opened
