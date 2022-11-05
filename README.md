@@ -1,5 +1,4 @@
 # SpriteEditor
-<<<<<<< HEAD
 
 Simple sprite editor to create characters, and backgrounds sprite
 
