@@ -275,17 +275,21 @@ void sprite_editor_event_loop(SpriteEditor * editor)
 
         if(editor->color_mode)
         {
-            uint32_t color = 15;
+            const uint32_t color = 15;
+            const size_t pixelsize = 16;
             size_t offset = 0;
-            for(size_t posy = 0;posy < editor->colors_window.height/16;++posy)
+            for(size_t posy = 0;posy < editor->colors_window.height/pixelsize;++posy)
             {
-                for(size_t posx = 0;posx < editor->colors_window.width/16;++posx)
+                for(size_t posx = 0;posx < editor->colors_window.width/pixelsize;++posx)
                 {
                     if(editor->cursor.selected && editor->cursor.x == posx && editor->cursor.y == posy)
                        editor->cursor.color = offset;
 
-                    fill_rectangle(editor->colors_window.x+posx*16,
-                                   editor->colors_window.y+posy*16,16-1,16-1,colors_table[offset]);
+                    fill_rectangle(editor->colors_window.x+posx*pixelsize,
+                                   editor->colors_window.y+posy*pixelsize,
+                                   pixelsize-1,
+                                   pixelsize-1,
+                                   colors_table[offset]);
                    ++offset;
                 }
             }
