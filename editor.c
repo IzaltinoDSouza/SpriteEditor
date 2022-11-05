@@ -29,10 +29,10 @@ void fill_rectangle(size_t x,size_t y,size_t width,size_t height,uint32_t pixel)
         }
     }
 }
-void drawcursor(SpriteEditor * editor,uint8_t color)
+void drawcursor(SpriteEditor * editor,size_t x,size_t y,uint8_t color)
 {
-    fill_rectangle(editor->cursor.x * editor->doc.sprite.pixelsize,
-                   editor->cursor.y * editor->doc.sprite.pixelsize,
+    fill_rectangle(x+editor->cursor.x * editor->doc.sprite.pixelsize,
+                   y+editor->cursor.y * editor->doc.sprite.pixelsize,
                    editor->doc.sprite.pixelsize-1,
                    editor->doc.sprite.pixelsize-1,
                    (color == 1) ? ATSIN_RGB(255,255,255) :
@@ -260,7 +260,11 @@ void sprite_editor_event_loop(SpriteEditor * editor)
                                           editor->cursor.color);
                 editor->cursor.selected = 0;
             }
-            drawcursor(editor,editor->cursor.color);
+            drawcursor(editor,
+                       editor->sprite_doc_window.x,
+                       editor->sprite_doc_window.y,
+                       editor->cursor.color);
+
             editor->doc.modified = 1;
         }
         if(editor->doc.auto_save && editor->doc.modified)
