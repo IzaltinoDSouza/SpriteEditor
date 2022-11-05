@@ -257,11 +257,11 @@ void sprite_editor_event_loop(SpriteEditor * editor)
             drawcursor(editor,editor->cursor.color);
             editor->doc.modified = 1;
         }
-		if(editor->doc.auto_save && editor->doc.modified)
-		{
-			sprite_doc_save(&editor->doc);
-			editor->doc.modified = 0;
-		}
+        if(editor->doc.auto_save && editor->doc.modified)
+        {
+            sprite_doc_save(&editor->doc);
+            editor->doc.modified = 0;
+        }
         SDL_UpdateWindowSurface(g_sdl_window);
     }
 }
