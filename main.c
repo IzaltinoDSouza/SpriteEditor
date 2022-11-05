@@ -23,4 +23,6 @@ int main()
     sprite_editor_exit(editor);
 
     sprite_doc_clearup(&doc);
+
+    free(test.pixels);
 }
