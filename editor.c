@@ -155,7 +155,7 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
 void sprite_editor_load_sprite(SpriteEditor * editor,const SpriteDoc * doc)
 {
     if(editor->doc.name)          free(editor->doc.name);
-    if(editor->doc.name)          free(editor->doc.author); 
+    if(editor->doc.author)        free(editor->doc.author); 
     if(editor->doc.sprite.pixels) free(editor->doc.sprite.pixels);
 
     editor->doc = sprite_doc_create_from_sprite(doc->name,doc->author,&doc->sprite);
