@@ -11,6 +11,8 @@ SDL_Event     g_sdl_event;
 #define ATSIN_RGBA(r,g,b,a) (a << 24) | ( r << 16) | ( g << 8) | ( b << 0) 
 #define ATSIN_RGB(r,g,b) ATSIN_RGBA(r,g,b,0)
 
+#include "colors_table.h"
+
 void drawpixel(size_t x,size_t y,uint32_t pixel)
 {
     size_t offset = y * g_sdl_surface->pitch + x *
@@ -29,14 +31,13 @@ void fill_rectangle(size_t x,size_t y,size_t width,size_t height,uint32_t pixel)
         }
     }
 }
-void drawcursor(SpriteEditor * editor,size_t x,size_t y,uint8_t color)
+void drawcursor(SpriteEditor * editor,size_t x,size_t y,uint32_t color)
 {
     fill_rectangle(x+editor->cursor.x * editor->doc.sprite.pixelsize,
                    y+editor->cursor.y * editor->doc.sprite.pixelsize,
                    editor->doc.sprite.pixelsize-1,
                    editor->doc.sprite.pixelsize-1,
-                   (color == 1) ? ATSIN_RGB(255,255,255) :
-                                  ATSIN_RGB(0,0,0));
+                   colors_table[color]);
 }
 void on_keypressed(SpriteEditor * editor,uint16_t scancode)
 {
@@ -131,7 +132,7 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
     editor->cursor.x         = 0;
     editor->cursor.y         = 0;
     editor->cursor.selected  = 0;
-    editor->cursor.color     = 1;
+    editor->cursor.color     = ATSIN_RGB(255,255,255);
     editor->edit_mode        = 0;
     
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0)
@@ -195,11 +196,9 @@ void sprite_editor_render_sprite(SpriteEditor * editor,size_t x,size_t y)
         for(size_t posx = 0;posx < editor->doc.sprite.width;++posx)
         {
             size_t offset = (posx * editor->doc.sprite.width) + posy;
-            
-            uint32_t color = editor->doc.sprite.pixels[offset] == 1 ? ATSIN_RGB(255,255,255) :
-                                                                      ATSIN_RGB(0,0,0);
+
             drawpixel(editor->sprite_doc_window.x+x+posx,
-                      editor->sprite_doc_window.y+y+posy,color);
+                      editor->sprite_doc_window.y+y+posy,colors_table[editor->doc.sprite.pixels[offset]]);
         }
     }
 }
@@ -221,24 +220,11 @@ void sprite_editor_draw_sprite(SpriteEditor * editor,size_t x,size_t y)
         for(size_t posx = 0;posx < editor->doc.sprite.width;++posx)
         {
             size_t offset = (posx * editor->doc.sprite.width) + posy;
-            if(editor->doc.sprite.pixels[offset] == 1)
-            {
-                fill_rectangle(editor->sprite_doc_window.x+x+posx*editor->doc.sprite.pixelsize,
+            fill_rectangle(editor->sprite_doc_window.x+x+posx*editor->doc.sprite.pixelsize,
                                editor->sprite_doc_window.y+y+posy*editor->doc.sprite.pixelsize,
                                editor->doc.sprite.pixelsize-1,
                                editor->doc.sprite.pixelsize-1,
-                               ATSIN_RGB(255,255,255));
-            }
-            else
-            {
-            
-                fill_rectangle(editor->sprite_doc_window.x+x+posx*editor->doc.sprite.pixelsize,
-                               editor->sprite_doc_window.y+y+posy*editor->doc.sprite.pixelsize,
-                               editor->doc.sprite.pixelsize-1,
-                               editor->doc.sprite.pixelsize-1,
-                               ATSIN_RGB(0,0,0));
-            
-            }
+                               colors_table[editor->doc.sprite.pixels[offset]]);
         }
     }
 }
@@ -289,12 +275,22 @@ void sprite_editor_event_loop(SpriteEditor * editor)
 
         if(editor->color_mode)
         {
-            fill_rectangle(editor->colors_window.x,
-                           editor->colors_window.y,
-                           editor->colors_window.width,
-                           editor->colors_window.height,
-                           ATSIN_RGB(0,0,0));
-            drawcursor(editor,editor->colors_window.x,editor->colors_window.y,1);
+            uint32_t color = 0;
+            size_t offset = 0;
+            for(size_t posy = 0;posy < editor->colors_window.height/16;++posy)
+            {
+                for(size_t posx = 0;posx < editor->colors_window.width/16;++posx)
+                {
+                    if(editor->cursor.selected && editor->cursor.x == posx && editor->cursor.y == posy)
+                       editor->cursor.color = offset;
+
+                    fill_rectangle(editor->colors_window.x+posx*16,
+                                   editor->colors_window.y+posy*16,16-1,16-1,colors_table[offset]);
+                   ++offset;
+                }
+            }
+
+            drawcursor(editor,editor->colors_window.x,editor->colors_window.y,color);
         }
         SDL_UpdateWindowSurface(g_sdl_window);
     }
