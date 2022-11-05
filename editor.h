@@ -22,7 +22,15 @@ typedef struct
     	size_t width;
     	size_t height;
     }sprite_doc_window;
-    
+
+    struct ColorsWindow
+    {
+        size_t x;
+        size_t y;
+        size_t width;
+        size_t height;
+    }colors_window;
+
     struct Cursor
     {
         size_t   x;
@@ -31,7 +39,8 @@ typedef struct
         uint8_t  selected;
     }cursor;
 
-    bool edit_mode;    
+    bool edit_mode;
+    bool color_mode;
 }SpriteEditor;
 
 SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t pixelsize);

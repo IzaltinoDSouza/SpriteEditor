@@ -49,7 +49,20 @@ void on_keypressed(SpriteEditor * editor,uint16_t scancode)
         sprite_editor_draw_sprite(editor,0,0);
     }else if(scancode == SDL_SCANCODE_E)
     {
+        editor->cursor.selected = 0;
+        editor->cursor.x = 0;
+        editor->cursor.y = 0;
         editor->edit_mode = (editor->edit_mode == 1) ? 0 : 1;
+        if(editor->edit_mode) editor->color_mode = 0;
+
+    }else if(scancode == SDL_SCANCODE_I)
+    {
+        editor->cursor.selected = 0;
+        editor->cursor.x = 0;
+        editor->cursor.y = 0;
+        editor->color_mode = (editor->color_mode == 1) ? 0 : 1;
+        if(editor->color_mode) editor->edit_mode = 0;
+
     }else if(scancode == SDL_SCANCODE_S)
     {
        sprite_doc_save(&editor->doc);
@@ -59,44 +72,36 @@ void on_keypressed(SpriteEditor * editor,uint16_t scancode)
         printf("%d\n",scancode);
     }*/
 
-    if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_LEFT)
+    if(editor->edit_mode == 1 || editor->color_mode == 1)
     {
-        editor->cursor.x -= 1;
-    }
-    else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_RIGHT)
-    {
-        editor->cursor.x += 1;
-    }
-    else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_UP)
-    {
-        editor->cursor.y -= 1;
-    }
-    else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_DOWN)
-    {
-        editor->cursor.y += 1;
-    }
-    else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_I)
-    {
-        editor->cursor.color = (editor->cursor.color == 0) ? 1 : 0;
-    }else if(editor->edit_mode == 1 && scancode == SDL_SCANCODE_SPACE)
-    {
-        editor->cursor.selected = (editor->cursor.selected == 1) ? 0 : 1;
+        if(scancode == SDL_SCANCODE_LEFT)       editor->cursor.x -= 1;
+        else if(scancode == SDL_SCANCODE_RIGHT) editor->cursor.x += 1;
+        else if(scancode == SDL_SCANCODE_UP)    editor->cursor.y -= 1;
+        else if(scancode == SDL_SCANCODE_DOWN)  editor->cursor.y += 1;
+
+        else if(scancode == SDL_SCANCODE_SPACE)
+        {
+            editor->cursor.selected = (editor->cursor.selected == 1) ? 0 : 1;
+        }
+
+        if(editor->cursor.x == -1) editor->cursor.x = 0;
+        if(editor->cursor.y == -1) editor->cursor.y = 0;
     }
 
-    if(editor->edit_mode == 1 && editor->cursor.x == -1)
-        editor->cursor.x = 0;
-    
-    if(editor->edit_mode == 1 && editor->cursor.y == -1)
-        editor->cursor.y = 0;
-    
     if(editor->edit_mode == 1)
     {
         const size_t x_max = (editor->sprite_doc_window.width  / editor->doc.sprite.pixelsize) - 1;
         const size_t y_max = (editor->sprite_doc_window.height / editor->doc.sprite.pixelsize) - 1;
-        
-        if(editor->cursor.x == -1) editor->cursor.x = 0;
-        if(editor->cursor.y == -1) editor->cursor.y = 0;
-        
+
+        if(editor->cursor.x > x_max) editor->cursor.x = x_max;
+        if(editor->cursor.y > y_max) editor->cursor.y = y_max;
+    }
+
+    if(editor->color_mode == 1)
+    {
+        const size_t x_max = (editor->colors_window.width  / editor->doc.sprite.pixelsize) - 1;
+        const size_t y_max = (editor->colors_window.height / editor->doc.sprite.pixelsize) - 1;
+
         if(editor->cursor.x > x_max) editor->cursor.x = x_max;
         if(editor->cursor.y > y_max) editor->cursor.y = y_max;
     }
@@ -115,6 +120,11 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
     editor->sprite_doc_window.y      = 0;
     editor->sprite_doc_window.width  = width;
     editor->sprite_doc_window.height = height-100;
+
+    editor->colors_window.x          = 0;
+    editor->colors_window.y          = editor->sprite_doc_window.height;
+    editor->colors_window.width      = width;
+    editor->colors_window.height     = 100;
 
     editor->doc = sprite_doc_create("untitled","unknown",width,height-100,pixelsize);
 
@@ -255,9 +265,13 @@ void sprite_editor_event_loop(SpriteEditor * editor)
             sprite_editor_draw_sprite(editor,0,0);
             if(editor->cursor.selected)
             {
-                sprite_editor_edit_sprite(editor,
-                                          editor->cursor.x,editor->cursor.y,
-                                          editor->cursor.color);
+                if(editor->cursor.x < editor->doc.sprite.width &&
+                   editor->cursor.y < editor->doc.sprite.height)
+                {
+                    sprite_editor_edit_sprite(editor,
+                                              editor->cursor.x,editor->cursor.y,
+                                              editor->cursor.color);
+                }
                 editor->cursor.selected = 0;
             }
             drawcursor(editor,
@@ -271,6 +285,16 @@ void sprite_editor_event_loop(SpriteEditor * editor)
         {
             sprite_doc_save(&editor->doc);
             editor->doc.modified = 0;
+        }
+
+        if(editor->color_mode)
+        {
+            fill_rectangle(editor->colors_window.x,
+                           editor->colors_window.y,
+                           editor->colors_window.width,
+                           editor->colors_window.height,
+                           ATSIN_RGB(0,0,0));
+            drawcursor(editor,editor->colors_window.x,editor->colors_window.y,1);
         }
         SDL_UpdateWindowSurface(g_sdl_window);
     }
