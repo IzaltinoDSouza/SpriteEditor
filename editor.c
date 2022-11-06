@@ -33,10 +33,10 @@ void fill_rectangle(size_t x,size_t y,size_t width,size_t height,uint32_t pixel)
 }
 void drawcursor(SpriteEditor * editor,size_t x,size_t y,uint32_t color)
 {
-    fill_rectangle(x+editor->cursor.x * editor->doc.sprite.pixelsize,
-                   y+editor->cursor.y * editor->doc.sprite.pixelsize,
-                   editor->doc.sprite.pixelsize-1,
-                   editor->doc.sprite.pixelsize-1,
+    fill_rectangle(x+editor->cursor.x * editor->cursor.pixelsize,
+                   y+editor->cursor.y * editor->cursor.pixelsize,
+                   editor->cursor.pixelsize-1,
+                   editor->cursor.pixelsize-1,
                    colors_table[color]);
 }
 void on_keypressed(SpriteEditor * editor,uint16_t scancode)
@@ -54,7 +54,11 @@ void on_keypressed(SpriteEditor * editor,uint16_t scancode)
         editor->cursor.x = 0;
         editor->cursor.y = 0;
         editor->edit_mode = (editor->edit_mode == 1) ? 0 : 1;
-        if(editor->edit_mode) editor->color_mode = 0;
+        if(editor->edit_mode)
+        {
+            editor->cursor.pixelsize = editor->doc.sprite.pixelsize;
+            editor->color_mode = 0;
+        }
 
     }else if(scancode == SDL_SCANCODE_I)
     {
@@ -62,7 +66,11 @@ void on_keypressed(SpriteEditor * editor,uint16_t scancode)
         editor->cursor.x = 0;
         editor->cursor.y = 0;
         editor->color_mode = (editor->color_mode == 1) ? 0 : 1;
-        if(editor->color_mode) editor->edit_mode = 0;
+        if(editor->color_mode)
+        {
+            editor->cursor.pixelsize = 16;
+            editor->edit_mode = 0;
+        }
 
     }else if(scancode == SDL_SCANCODE_S)
     {
@@ -131,6 +139,7 @@ SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t
 
     editor->cursor.x         = 0;
     editor->cursor.y         = 0;
+    editor->cursor.pixelsize = editor->doc.sprite.pixelsize;
     editor->cursor.selected  = 0;
     editor->cursor.color     = 15;
     editor->edit_mode        = 0;
@@ -277,21 +286,20 @@ void sprite_editor_event_loop(SpriteEditor * editor)
         if(editor->color_mode)
         {
             const uint32_t color = 15;
-            const size_t pixelsize = 16;
             size_t offset = 0;
-            for(size_t posy = 0;posy < editor->colors_window.height/pixelsize;++posy)
+            for(size_t posy = 0;posy < editor->colors_window.height/editor->cursor.pixelsize;++posy)
             {
-                for(size_t posx = 0;posx < editor->colors_window.width/pixelsize;++posx)
+                for(size_t posx = 0;posx < editor->colors_window.width/editor->cursor.pixelsize;++posx)
                 {
                     if(offset > COLORS_TABLE_SIZE) break;
 
                     if(editor->cursor.selected && editor->cursor.x == posx && editor->cursor.y == posy)
                        editor->cursor.color = offset;
 
-                    fill_rectangle(editor->colors_window.x+posx*pixelsize,
-                                   editor->colors_window.y+posy*pixelsize,
-                                   pixelsize-1,
-                                   pixelsize-1,
+                    fill_rectangle(editor->colors_window.x+posx*editor->cursor.pixelsize,
+                                   editor->colors_window.y+posy*editor->cursor.pixelsize,
+                                   editor->cursor.pixelsize-1,
+                                   editor->cursor.pixelsize-1,
                                    colors_table[offset]);
                    ++offset;
                 }

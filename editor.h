@@ -35,6 +35,7 @@ typedef struct
     {
         size_t   x;
         size_t   y;
+        size_t   pixelsize;
         uint32_t color;
         uint8_t  selected;
     }cursor;
