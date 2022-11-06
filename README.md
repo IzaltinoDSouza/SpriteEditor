@@ -7,7 +7,7 @@ SDL2
 
 ## Build Instruction
 ```
-gcc main.c sprite.c editor.c -o SpriteEditor -lSDL2main -lSDL2 
+gcc main.c sprite.c sprite_doc.c editor.c -o SpriteEditor -lSDL2main -lSDL2 
 ```
 ## Shortcuts
 * [r]     render
