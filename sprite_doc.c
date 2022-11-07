@@ -8,11 +8,11 @@ SpriteDoc sprite_doc_create(char * name,char * author,size_t width,size_t height
     SpriteDoc doc;
     
     //TODO: check if title is NULL
-    doc.name = malloc(strlen(name));
+    doc.name = malloc(strlen(name) + 1);
     strcpy(doc.name,name);
     
     //TODO: check if author is NULL
-    doc.author = malloc(strlen(author));
+    doc.author = malloc(strlen(author) + 1);
     strcpy(doc.author,author);
         
     doc.version   = SPRITE_DOC_01_VERSION;
@@ -71,7 +71,7 @@ SpriteDoc sprite_doc_load(const char * filename)
 {
     SpriteDoc doc;
     //TODO: check if filename is NULL
-    doc.name = malloc(strlen(filename));
+    doc.name = malloc(strlen(filename) + 1);
     strcpy(doc.name,filename);
     
     //TODO: get author
