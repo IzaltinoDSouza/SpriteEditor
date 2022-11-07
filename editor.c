@@ -119,8 +119,6 @@ void on_keypressed(SpriteEditor * editor,uint16_t scancode)
 SpriteEditor * sprite_editor_init(char * title,size_t width,size_t height,size_t pixelsize)
 {
     SpriteEditor * editor = malloc(sizeof(SpriteEditor));
-    editor->title = malloc(sizeof(char) * strlen(title) + 1);
-    strcpy(editor->title,title);
 
     editor->window.width = width;
     editor->window.width = height;
@@ -314,7 +312,6 @@ void sprite_editor_event_loop(SpriteEditor * editor)
 void sprite_editor_exit(SpriteEditor * editor)
 {
     sprite_doc_clearup(&editor->doc);
-    free(editor->title);
     free(editor);
     
     SDL_DestroyWindow(g_sdl_window);

@@ -6,7 +6,6 @@
 
 typedef struct
 {
-    char *    title;
     SpriteDoc doc;
     
     struct Window
